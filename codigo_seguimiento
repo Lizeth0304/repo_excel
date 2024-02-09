@@ -1,0 +1,40 @@
+Sub CopiarSoloValoresYConvertirANumeros2()
+    ' Definir variables
+    Dim origen As Worksheet
+    Dim nuevaHoja As Worksheet
+    Dim ultimaFila As Long
+    
+    ' Definir hoja de origen
+    Set origen = ThisWorkbook.Sheets("Doc. Ingreados - Rectorado")
+    
+    ' Verificar si la hoja "Copia" existe
+    On Error Resume Next
+    Set nuevaHoja = Sheets("Copia")
+    On Error GoTo 0
+    
+    ' Si la hoja "Copia" no existe, crearla
+    If nuevaHoja Is Nothing Then
+        Set nuevaHoja = Sheets.Add(After:=Sheets(Sheets.Count))
+        nuevaHoja.Name = "Copia"
+    Else
+        nuevaHoja.Cells.Clear ' Limpiar contenido existente si la hoja ya existe
+    End If
+    
+    ' Copiar solo los valores de las columnas A, G y L
+    origen.Range("A:A,G:G,L:L").Copy
+    nuevaHoja.Range("A1").PasteSpecial Paste:=xlPasteValues
+    
+    ' Convertir columna G de texto a número en la nueva hoja
+    ultimaFila = nuevaHoja.Cells(nuevaHoja.Rows.Count, "B").End(xlUp).Row
+    nuevaHoja.Range("B1:B" & ultimaFila).Value = nuevaHoja.Range("B1:B" & ultimaFila).Value
+    
+    ' Convertir columna L de texto a número en la nueva hoja
+    ultimaFila = nuevaHoja.Cells(nuevaHoja.Rows.Count, "C").End(xlUp).Row
+    nuevaHoja.Range("C1:C" & ultimaFila).Value = nuevaHoja.Range("C1:C" & ultimaFila).Value
+    
+    ' Limpiar portapapeles
+    Application.CutCopyMode = False
+    
+    MsgBox "Los expedientes atendidos fueron calculados. ", vbInformation
+End Sub
+
